@@ -1,0 +1,224 @@
+create or replace NONEDITIONABLE procedure ColoniaGetByID(
+pCursor out sys_refcursor,
+pIdMunicipio in Number
+
+)
+as 
+begin
+open pCursor for
+    select nombre as NombreColonia from colonia where idMunicipio_fk = pIdMunicipio;
+
+end ColoniaGetByID;
+
+
+--------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE procedure EstadoGetById(
+pCursor out sys_refcursor,
+pIdPais in Number
+ )
+ as
+ begin
+ open pCursor for
+
+    select idEstado, Nombre as NombreEstado from estado where idPais_fk = pIdPais;
+
+    end EstadoGetById;
+
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+create or replace NONEDITIONABLE procedure MunicipioGetByID(
+pCursor out sys_refcursor,
+pIdEstado in Number
+)
+as
+begin
+open pCursor for
+    select idMunicipio, nombre as NombreMunicipio from Municipio where idEstado_fk = pIdEstado;
+
+end MunicipioGetByID;
+
+
+----------------------------------------------------------------------------------------------------
+create or replace NONEDITIONABLE PROCEDURE PaisGetAllSP(
+    pCursor OUT SYS_REFCURSOR
+ )
+ AS 
+BEGIN
+  Open pCursor FOR
+
+    Select idPais, NombrePais from pais;
+
+END PaisGetAllSP;
+
+
+---------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE procedure RolGetAllSP(
+    pCursor OUT SYS_REFCURSOR
+)
+AS
+BEGIN 
+    OPEN pCursor FOR
+
+    select idRol, NombreRol from rol;
+
+END RolGetAllSP;
+
+
+----------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE PROCEDURE UsuarioAddSP(
+    pNombre IN VARCHAR,
+    pApellidoPaterno IN VARCHAR,
+    pApellidoMaterno IN VARCHAR,
+    pFechaNacimiento IN DATE,
+    pCURP IN VARCHAR,
+    pUsername IN VARCHAR,
+    pEmail IN VARCHAR,
+    pNuevoTelefono IN VARCHAR,
+    pPassword IN VARCHAR,
+    pSexo IN CHAR,
+    pCelular IN VARCHAR,
+    pidRol_fk in NUMBER
+    )
+    AS
+    
+    BEGIN
+
+    INSERT INTO Usuario (Nombre, ApellidoPaterno, ApellidoMaterno, Username, CURP, NuevoTelefono, Password, Sexo, Celular, FechaNacimiento, Email, idRol_fk) VALUES 
+    (pNombre, pApellidoPaterno, pApellidoMaterno, pUsername, pCURP, pNuevoTelefono, pPassword, pSexo, pCelular, pFechaNacimiento, pEmail, pidRol_fk);
+
+    END UsuarioAddSP;
+
+----------------------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE PROCEDURE UsuarioDeleteSP(
+    pidUsuario IN NUMBER
+    )
+    AS
+    
+    BEGIN
+
+    DELETE From Usuario WHERE idUsuario = pidUsuario;
+
+    END UsuarioDeleteSP;
+
+-------------------------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE PROCEDURE UsuarioDireccionGetAllSP(
+pCursor OUT SYS_REFCURSOR
+)
+AS
+
+BEGIN 
+OPEN pCursor FOR
+SELECT Usuario.idUsuario, Usuario.Nombre as NombreUsuario, Usuario.ApellidoPaterno, Usuario.ApellidoMaterno, Usuario.FechaNacimiento, Usuario.CURP, Usuario.UserName, Usuario.Email, Usuario.NuevoTelefono as NumeroTelefonico, Usuario.Password,
+Usuario.Sexo, Usuario.Celular, Rol.NombreRol, Rol.idRol, Direccion.idDireccion, Direccion.Calle, Direccion.NumeroInterior, Direccion.NumeroExterior, Direccion.idColonia_fk, Colonia.Nombre as NombreColonia, Colonia.CodigoPostal, Colonia.idMunicipio_fk,
+Municipio.Nombre as MunicipioNombre, Municipio.idEstado_fk, Estado.Nombre as NombreEstado, Estado.idPais_fk, Pais.NombrePais as NombrePais
+FROM Usuario
+LEFT JOIN Rol on Usuario.idRol_fk = Rol.idRol
+LEFT JOIN Direccion on Usuario.idUsuario = Direccion.idUsuario_fk
+LEFT JOIN Colonia on Direccion.idColonia_fk  = Colonia.idColonia
+LEFT JOIN Municipio on Colonia.idMunicipio_fk = Municipio.idMunicipio
+LEFT JOIN Estado on Municipio.idEstado_fk = Estado.idEstado
+LEFT JOIN Pais on Estado.idPais_fk = Pais.idPais order by idUsuario;
+
+END UsuarioDireccionGetAllSP;
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE PROCEDURE UsuarioDireccionGetById(
+pCursor OUT SYS_REFCURSOR,
+pIdUsuario IN VARCHAR
+)
+AS
+
+BEGIN 
+OPEN pCursor FOR
+SELECT Usuario.idUsuario, Usuario.Nombre as NombreUsuario, Usuario.ApellidoPaterno, Usuario.ApellidoMaterno, Usuario.FechaNacimiento, Usuario.CURP, Usuario.Email, Usuario.NuevoTelefono as NumeroTelefonico, Usuario.Password,
+Usuario.Sexo, Usuario.Celular, Direccion.idDireccion, Direccion.Calle, Direccion.NumeroInterior, Direccion.NumeroExterior, Direccion.idColonia_fk, Colonia.Nombre as NombreColonia, Colonia.CodigoPostal, Colonia.idMunicipio_fk,
+Municipio.Nombre as MunicipioNombre, Municipio.idEstado_fk, Estado.Nombre as NombreEstado, Estado.idPais_fk, Pais.NombrePais as NombrePais
+FROM Usuario
+LEFT JOIN Direccion on Usuario.idUsuario = Direccion.idUsuario_fk
+LEFT JOIN Colonia on Direccion.idColonia_fk  = Colonia.idColonia
+LEFT JOIN Municipio on Colonia.idMunicipio_fk = Municipio.idMunicipio
+LEFT JOIN Estado on Municipio.idEstado_fk = Estado.idEstado
+LEFT JOIN Pais on Estado.idPais_fk = Pais.idPais where Usuario.idUsuario = pIdUsuario;
+
+END UsuarioDireccionGetById;
+
+------------------------------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE PROCEDURE UsuarioGetAllSP(
+ pCursor OUT SYS_REFCURSOR
+ )
+ AS
+BEGIN
+OPEN pCursor FOR
+SELECT Usuario.idUsuario, Usuario.Nombre, Usuario.ApellidoPaterno, Usuario.ApellidoMaterno, Usuario.FechaNacimiento, Usuario.CURP, Usuario.Username, Usuario.Email, Usuario.NuevoTelefono as NumeroTelefonico, Usuario.Password, Usuario.Celular,
+ Rol.NombreRol
+ FROM Usuario
+ INNER JOIN Rol
+ ON Usuario.idRol_fk = Rol.idRol;
+
+ END UsuarioGetAllSP;
+
+-------------------------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE PROCEDURE UsuarioGetById(
+ pCursor OUT SYS_REFCURSOR,
+ pidUsuario IN NUMBER
+ 
+ )
+ AS
+ 
+ BEGIN
+ OPEN pCursor FOR
+ SELECT Usuario.idUsuario, Usuario.Nombre, Usuario.ApellidoPaterno, Usuario.ApellidoMaterno, Usuario.FechaNacimiento, Usuario.CURP, Usuario.Username, Usuario.Email, Usuario.NuevoTelefono, Usuario.Password, Usuario.Celular,
+ Rol.NombreRol
+ FROM Usuario
+ INNER JOIN Rol
+ ON Usuario.idRol_fk = Rol.idRol where usuario.idusuario = pidUsuario;
+
+ END UsuarioGetById;
+
+----------------------------------------------------------------------------------------------------------------------------------
+
+create or replace NONEDITIONABLE PROCEDURE UsuarioUpdateSP(
+    pidUsuario IN VARCHAR,
+    pNombre IN VARCHAR,
+    pApellidoPaterno IN VARCHAR,
+    pApellidoMaterno IN VARCHAR,
+    pFechaNacimiento IN DATE,
+    pCURP IN VARCHAR,
+    pUsername IN VARCHAR,
+    pEmail IN VARCHAR,
+    pNuevoTelefono IN VARCHAR,
+    pPassword IN VARCHAR,
+    pSexo IN CHAR,
+    pCelular IN CHAR,
+    pidRol_fk IN NUMBER
+    )
+    AS
+    
+    BEGIN
+    UPDATE Usuario set Nombre = pNombre, ApellidoPaterno = pApellidoPaterno, ApellidoMaterno = pApellidoMaterno, FechaNacimiento = pFechaNacimiento , CURP = pCURP, Username = pUsername, Email = pEmail,
+    NuevoTelefono = pNuevoTelefono, Password = pPassword, Sexo = pSexo, Celular = pCelular, idRol_fk = pidRol_fk WHERE idUsuario = pidUsuario;
+
+    END UsuarioUpdateSP;
+
+
+
+
+
+
+
+
+
+
+
+
+

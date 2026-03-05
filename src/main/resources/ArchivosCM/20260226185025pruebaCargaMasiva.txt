@@ -1,0 +1,3 @@
+Dilan|Araoza|Carbajal|18/06/2003|AACD030618HGRRLA5|adilac@email.com|7676743278|Ma|5674839201|dilanaraiza18|2|fdsfsdfsdfsdfsdfsdfsdfsdfsdfsdfdsfsdfsdfdfsfsdfsdfsdfsfsdfsdf|CalleNueva|32|2|3422
+Luis|Lopez|Carbajal|18/06/2003|AACD030618HGRRLA5|adilac@email.com|7676743278|Ma|5674839201|dilanaraiza18|3|dasdasdasdasdasdasdasdasdasdasdasdadadadadad|CalleNueva|32|2|3422
+Juan|Lopez|Trujillo|18/06/2003|AACD030618HGRRLA5|adilac@email.com|7676743278|Ma|5674839201|dilanaraiza18|1|dsadasdasdasdsadasdasd|CalleNueva|32|2|3422
