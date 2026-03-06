@@ -37,7 +37,7 @@ public class DemoRestController {
         
         
         
-        return ResponseEntity.status(500).body(result.objects);
+        return ResponseEntity.status(200).body(result.objects);
     }
     
     @GetMapping("{idUsuario}")

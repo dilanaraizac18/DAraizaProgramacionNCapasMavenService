@@ -19,7 +19,7 @@ public class Municipio {
     @Column(name="nombre")
     private String Nombre;
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name="idestado")
+    @JoinColumn(name="idestado_fk")
     public Estado estado;
     
     

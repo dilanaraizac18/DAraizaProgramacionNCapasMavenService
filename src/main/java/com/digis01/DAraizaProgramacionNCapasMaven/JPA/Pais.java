@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 @Entity
 public class Pais {
     @Id
-    @Column (name="idPais")
+    @Column (name="idpais")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int idPais;
     @Column(name="nombrepais")
