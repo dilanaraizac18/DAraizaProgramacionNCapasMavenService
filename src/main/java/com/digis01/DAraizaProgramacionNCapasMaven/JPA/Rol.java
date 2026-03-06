@@ -1,7 +1,6 @@
 
 package com.digis01.DAraizaProgramacionNCapasMaven.JPA;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.*;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

@@ -6,9 +6,9 @@ package com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO;
 
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Colonia;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Rol;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -61,7 +61,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
     
     @Override
     @Transactional
-    public Result ADD(com.digis01.DAraizaProgramacionNCapasMaven.ML.Usuario usuario){
+    public Result ADD(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuario){
         Result result = new Result();
         
         try{
@@ -85,7 +85,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
             Direccion direccionjpa = new Direccion();
             direccionjpa.colonia = new Colonia();
             
-            com.digis01.DAraizaProgramacionNCapasMaven.ML.Direccion direccion = usuario.Direcciones.get(0);
+            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccion = usuario.Direcciones.get(0);
             
             direccionjpa.setCalle(direccion.getCalle());
             direccionjpa.setNumeroInterior(direccion.getNumeroInterior());
@@ -122,10 +122,10 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
             
              if (usuariojpa != null) {
 
-            com.digis01.DAraizaProgramacionNCapasMaven.ML.Usuario usuarioML =
+            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuarioML =
                     modelMapper.map(
                             usuariojpa,
-                            com.digis01.DAraizaProgramacionNCapasMaven.ML.Usuario.class
+                            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario.class
                     );
 
             result.object = usuarioML;
@@ -200,7 +200,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
 
     @Override
     @Transactional
-    public Result Updateusuario(com.digis01.DAraizaProgramacionNCapasMaven.ML.Usuario usuario) {
+    public Result Updateusuario(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuario) {
      Result result = new Result();
      
      try{
@@ -228,7 +228,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
 
             usuariojpa.getDirecciones().clear();
 
-            for (com.digis01.DAraizaProgramacionNCapasMaven.ML.Direccion direccionML : usuario.getDirecciones()) {
+            for (com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionML : usuario.getDirecciones()) {
 
                 com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionJPA = new com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion();
 
@@ -260,7 +260,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
     
     @Override
     @Transactional
-    public Result UpdateUsuario(com.digis01.DAraizaProgramacionNCapasMaven.ML.Usuario usuario) {
+    public Result UpdateUsuario(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuario) {
         Result result = new Result();
 
         try {
@@ -300,7 +300,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
             com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionjpa = entityManager.find(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion.class, idUsuario);
 
             ModelMapper modelMapper = new ModelMapper();
-            com.digis01.DAraizaProgramacionNCapasMaven.ML.Direccion direccion = modelMapper.map(direccionjpa, com.digis01.DAraizaProgramacionNCapasMaven.ML.Direccion.class);
+            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccion = modelMapper.map(direccionjpa, com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion.class);
             result.object = direccion;
 
             result.correct = true;
@@ -339,7 +339,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
     
         @Override
     @Transactional
-    public Result AddDireccion( com.digis01.DAraizaProgramacionNCapasMaven.ML.Direccion direccion, int idUsuario) {
+    public Result AddDireccion( com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccion, int idUsuario) {
         Result result = new Result();
 
         try {

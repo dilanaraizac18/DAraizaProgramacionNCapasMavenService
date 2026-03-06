@@ -4,9 +4,9 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.Direccion;
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.Usuario;
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.Result;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
 
 /**
  *

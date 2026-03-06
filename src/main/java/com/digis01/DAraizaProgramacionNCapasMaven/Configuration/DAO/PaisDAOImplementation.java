@@ -1,9 +1,8 @@
 
 package com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.Pais;
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.Result;
-import com.digis01.DAraizaProgramacionNCapasMaven.ML.Usuario;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Pais;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
