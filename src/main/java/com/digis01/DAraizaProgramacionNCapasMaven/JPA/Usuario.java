@@ -44,7 +44,7 @@ public class Usuario {
     @Size(min = 3, max = 50, message = "El Apellido Materno debe llevar minimo 3 caracteres")
     private String ApellidoMaterno;
     
-    @Column(name="nuevotelefono")
+    @Column(name="numerotelefonico")
     @NotEmpty(message = "No puedo ser vacio")
     @Pattern(regexp = "^[0-9]{10}$", message = "Solo numeros")
     @Size(min = 10, max = 10, message = "Debe haber minimo 10 numeros")
