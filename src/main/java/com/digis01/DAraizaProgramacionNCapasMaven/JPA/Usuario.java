@@ -91,7 +91,7 @@ public class Usuario {
     public int Status;
 
     
-    @OneToMany(mappedBy = "idDireccion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     public List<Direccion> Direcciones;
     
     //setters
@@ -103,8 +103,7 @@ public class Usuario {
         this.IdUsuario = IdUsuario;
     }
 
-    public Usuario(int IdUsuario, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String NumeroTelefonico, Date FechaNacimiento, String CURP, String Username, String Sexo, String Celular, String Email, String Imagen,int Status,String Password, Rol Rol, List<Direccion> Direcciones) {
-        this.IdUsuario = IdUsuario;
+    public Usuario( String Nombre, String ApellidoPaterno, String ApellidoMaterno, String NumeroTelefonico, Date FechaNacimiento, String CURP, String Username, String Sexo, String Celular, String Email, String Imagen,int Status,String Password, Rol Rol) {
         this.Nombre = Nombre;
         this.ApellidoPaterno = ApellidoPaterno;
         this.ApellidoMaterno = ApellidoMaterno;
@@ -118,7 +117,6 @@ public class Usuario {
         this.Status = Status;
         this.Password = Password;
         this.Rol = Rol;
-        this.Direcciones = Direcciones;
         this.Imagen = Imagen;
     }
     
