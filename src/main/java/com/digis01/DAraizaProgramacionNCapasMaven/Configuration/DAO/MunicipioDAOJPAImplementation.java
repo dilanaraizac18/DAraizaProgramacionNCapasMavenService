@@ -4,7 +4,7 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Estado;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Municipio;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
@@ -15,34 +15,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  *
- * @author digis
+ * @author Dilan
  */
-
 @Repository
-@RequestMapping("/api/estado")
-public class EstadoDAOJPAImplementation implements IEstadoJPA{
+@RequestMapping("/api/municipio")
+public class MunicipioDAOJPAImplementation implements IMunicipioJPA{
 
     @Autowired
-    private EntityManager entityManager;
+    private EntityManager entityManager; 
     
     @Override
-    public Result EstadosByIdPais(int idPais) {
+    public Result MunicipioByIdEstado(int idEstado) {
+        
         Result result = new Result();
         
         try{
-            TypedQuery<Estado> estadoQuery = entityManager.createQuery("FROM Estado where pais.idPais = :pidPais", Estado.class);
-            estadoQuery.setParameter("pidPais", idPais);
+            TypedQuery<Municipio> municipioQuery = entityManager.createQuery("FROM Municipio where estado.idEstado = :pidEstado", Municipio.class);
+            municipioQuery.setParameter("pidEstado", idEstado);
             
-            result.objects = new ArrayList<>(estadoQuery.getResultList());
+            result.objects = new ArrayList<>(municipioQuery.getResultList());
             
             result.correct = true;
         }catch (Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
-            
         }
-        
         
         return result;
     }

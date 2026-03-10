@@ -4,8 +4,8 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.RestController;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.EstadoDAOImplementation;
-import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.EstadoDAOJPAImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.MunicipioDAOImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.MunicipioDAOJPAImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,30 +19,25 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Dilan
  */
 @RestController
-@RequestMapping("api/estado")
-public class EstadoRestController {
+@RequestMapping("api/municipio")
+public class MunicipioRestController {
     
     @Autowired
-    private EstadoDAOJPAImplementation estadoDAOJPAImplementation;
-    
-    
+    private MunicipioDAOJPAImplementation municipioDAOJPAImplementation;
     
     @GetMapping
-    public ResponseEntity EstadoByIdPais(@RequestParam ("idPais") int idPais){
-        
+    public ResponseEntity  MunicipioByIdEstado(@RequestParam ("idEstado") int idEstado){
         Result result;
         
         try{
+            result = municipioDAOJPAImplementation.MunicipioByIdEstado(idEstado);
             
-            result = estadoDAOJPAImplementation.EstadosByIdPais(idPais);
             
-        }catch (Exception ex){
+        }catch(Exception ex){
             return ResponseEntity.status(500).body(ex);
         }
         
         return ResponseEntity.ok(result);
-        
     }
-    
     
 }

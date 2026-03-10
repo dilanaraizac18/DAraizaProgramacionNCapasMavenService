@@ -4,46 +4,41 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Estado;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Colonia;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  *
- * @author digis
+ * @author Dilan
  */
-
 @Repository
-@RequestMapping("/api/estado")
-public class EstadoDAOJPAImplementation implements IEstadoJPA{
+public class ColoniaDAOJPAImplementation implements IColoniaJPA{
 
     @Autowired
     private EntityManager entityManager;
     
     @Override
-    public Result EstadosByIdPais(int idPais) {
+    public Result ColoniaByIdMunicipio(int idMunicipio) {
+        
         Result result = new Result();
         
         try{
-            TypedQuery<Estado> estadoQuery = entityManager.createQuery("FROM Estado where pais.idPais = :pidPais", Estado.class);
-            estadoQuery.setParameter("pidPais", idPais);
+            TypedQuery<Colonia> coloniaQuery = entityManager.createQuery("From Colonia where municipio.idMunicipio = :pidMunicipio", Colonia.class);
+            coloniaQuery.setParameter("pidMunicipio", idMunicipio);
             
-            result.objects = new ArrayList<>(estadoQuery.getResultList());
-            
-            result.correct = true;
-        }catch (Exception ex){
+            result.objects = new ArrayList<>(coloniaQuery.getResultList());
+           
+        }catch(Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
             result.ex = ex;
             
         }
-        
-        
         return result;
     }
     
