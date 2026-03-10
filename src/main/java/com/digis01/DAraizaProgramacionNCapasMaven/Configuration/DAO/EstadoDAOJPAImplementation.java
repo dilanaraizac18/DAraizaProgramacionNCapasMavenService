@@ -8,6 +8,7 @@ import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Estado;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
+import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,8 +33,9 @@ public class EstadoDAOJPAImplementation implements IEstadoJPA{
             TypedQuery<Estado> estadoQuery = entityManager.createQuery("FROM Estado where Pais.idPais = :pidPais", Estado.class);
             estadoQuery.setParameter("pidPais", this);
             
-            result.objects
+            result.objects = new ArrayList<>(estadoQuery.getResultList());
             
+            result.correct = true;
         }catch (Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
