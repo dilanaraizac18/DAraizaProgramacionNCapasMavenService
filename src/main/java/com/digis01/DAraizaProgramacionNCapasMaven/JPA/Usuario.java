@@ -1,6 +1,8 @@
 
 package com.digis01.DAraizaProgramacionNCapasMaven.JPA;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,11 +24,13 @@ import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Usuario {
     
-    @Id
-    @Column(name="idusuario")
+    @JsonIgnore
+    @Id    
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="idusuario")
     private int IdUsuario;
     
     @Column(name= "nombre")
@@ -233,13 +237,13 @@ public class Usuario {
         this.Rol = Rol;
     }
 
-    public List<Direccion> getDirecciones() {
-        return Direcciones;
-    }
-
-    public void setDirecciones(List<Direccion> Direcciones) {
-        this.Direcciones = Direcciones;
-    }
+//    public List<Direccion> getDirecciones() {
+//        return Direcciones;
+//    }
+//
+//    public void setDirecciones(List<Direccion> Direcciones) {
+//        this.Direcciones = Direcciones;
+//    }
 
     public Object Rol() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody

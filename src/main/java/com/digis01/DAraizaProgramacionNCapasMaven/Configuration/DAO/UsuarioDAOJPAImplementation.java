@@ -198,64 +198,64 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
         
     }
 
-    @Override
-    @Transactional
-    public Result Updateusuario(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuario) {
-     Result result = new Result();
-     
-     try{
-   com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuariojpa = entityManager.find(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario.class, usuario.getIdUsuario());
-        if(usuariojpa != null){
-             usuariojpa.setNombre(usuario.getNombre());
-             usuariojpa.setApellidoPaterno(usuario.getApellidoPaterno());
-             usuariojpa.setApellidoMaterno(usuario.getApellidoMaterno());
-             usuariojpa.setCURP(usuario.getCURP());
-             usuariojpa.setCelular(usuario.getCelular());
-             usuariojpa.setEmail(usuario.getEmail());
-             usuariojpa.setFechaNacimiento(usuario.getFechaNacimiento());
-             usuariojpa.setPassword(usuario.getPassword());
-             usuariojpa.setSexo(usuario.getSexo());
-             usuariojpa.setStatus(usuario.getStatus());
-
-             
-
-
-            
-            if (usuariojpa.getRol() != null) {
-                Rol rolBD = entityManager.find(Rol.class, usuariojpa.getRol().getidRol());
-                usuariojpa.setRol(rolBD);
-            }
-
-            usuariojpa.getDirecciones().clear();
-
-            for (com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionML : usuario.getDirecciones()) {
-
-                com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionJPA = new com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion();
-
-                direccionJPA.setCalle(direccionML.getCalle());
-                direccionJPA.setNumeroExterior(direccionML.getNumeroExterior());
-
-                direccionJPA.setUsuario(usuariojpa);
-
-                usuariojpa.getDirecciones().add(direccionJPA);
-            }
-
-            result.correct = true;
-             
-            
-        }
-
-         
-     }catch(Exception ex){
-         result.correct = false;
-         result.errorMessage = ex.getLocalizedMessage();
-         result.ex = ex;
-         
-     }
-     
-     return result;
-     
-    }
+//    @Override
+//    @Transactional
+//    public Result Updateusuario(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuario) {
+//     Result result = new Result();
+//     
+//     try{
+//   com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuariojpa = entityManager.find(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario.class, usuario.getIdUsuario());
+//        if(usuariojpa != null){
+//             usuariojpa.setNombre(usuario.getNombre());
+//             usuariojpa.setApellidoPaterno(usuario.getApellidoPaterno());
+//             usuariojpa.setApellidoMaterno(usuario.getApellidoMaterno());
+//             usuariojpa.setCURP(usuario.getCURP());
+//             usuariojpa.setCelular(usuario.getCelular());
+//             usuariojpa.setEmail(usuario.getEmail());
+//             usuariojpa.setFechaNacimiento(usuario.getFechaNacimiento());
+//             usuariojpa.setPassword(usuario.getPassword());
+//             usuariojpa.setSexo(usuario.getSexo());
+//             usuariojpa.setStatus(usuario.getStatus());
+//
+//             
+//
+//
+//            
+//            if (usuariojpa.getRol() != null) {
+//                Rol rolBD = entityManager.find(Rol.class, usuariojpa.getRol().getidRol());
+//                usuariojpa.setRol(rolBD);
+//            }
+//
+//            usuariojpa.getDirecciones().clear();
+//
+//            for (com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionML : usuario.getDirecciones()) {
+//
+//                com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionJPA = new com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion();
+//
+//                direccionJPA.setCalle(direccionML.getCalle());
+//                direccionJPA.setNumeroExterior(direccionML.getNumeroExterior());
+//
+//                direccionJPA.setUsuario(usuariojpa);
+//
+//                usuariojpa.getDirecciones().add(direccionJPA);
+//            }
+//
+//            result.correct = true;
+//             
+//            
+//        }
+//
+//         
+//     }catch(Exception ex){
+//         result.correct = false;
+//         result.errorMessage = ex.getLocalizedMessage();
+//         result.ex = ex;
+//         
+//     }
+//     
+//     return result;
+//     
+//    }
     
     
     @Override
