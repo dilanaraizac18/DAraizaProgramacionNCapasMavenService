@@ -23,7 +23,7 @@ public class Colonia {
     @Column(name="codigopostal")
     private String CodigoPostal;
     
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name="idmunicipio_fk")
     public Municipio municipio;
 

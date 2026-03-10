@@ -18,7 +18,7 @@ public class Municipio {
     private int idMunicipio;
     @Column(name="nombre")
     private String Nombre;
-    @ManyToOne (fetch = FetchType.LAZY)
+    @ManyToOne 
     @JoinColumn(name="idestado_fk")
     public Estado estado;
     

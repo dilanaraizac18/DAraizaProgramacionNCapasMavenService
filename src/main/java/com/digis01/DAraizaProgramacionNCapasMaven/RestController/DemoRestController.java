@@ -36,8 +36,23 @@ public class DemoRestController {
     @GetMapping
     public ResponseEntity ObtenerDatos(){
         Result result = new Result();
+        try{
         result = usuarioDAOJPAImplementation.GetAll();
-        return ResponseEntity.status(200).body(result);
+        
+        if(result.correct){
+            if(result.objects != null || !result.objects.isEmpty()){
+                return ResponseEntity.ok(result);
+            } else{
+               return ResponseEntity.noContent().build();
+            }
+            
+        }else {
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+        
+        }catch(Exception ex){
+            return ResponseEntity.status(500).body(ex);
+        }
     }
     
     @GetMapping("{idUsuario}")

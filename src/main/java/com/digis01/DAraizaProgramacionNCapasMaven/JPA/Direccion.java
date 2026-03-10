@@ -1,6 +1,7 @@
 
 package com.digis01.DAraizaProgramacionNCapasMaven.JPA;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +34,7 @@ public class Direccion {
     
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "idusuario_fk")
+    @JsonIgnore
     public Usuario usuario;
     @OneToOne
     @JoinColumn(name="idcolonia_fk")

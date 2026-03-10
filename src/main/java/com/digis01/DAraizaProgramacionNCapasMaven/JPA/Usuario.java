@@ -27,7 +27,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Usuario {
     
-    @JsonIgnore
+    
     @Id    
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="idusuario")
@@ -107,7 +107,8 @@ public class Usuario {
         this.IdUsuario = IdUsuario;
     }
 
-    public Usuario( String Nombre, String ApellidoPaterno, String ApellidoMaterno, String NumeroTelefonico, Date FechaNacimiento, String CURP, String Username, String Sexo, String Celular, String Email, String Imagen,int Status,String Password, Rol Rol) {
+    public Usuario(int IdUsuario, String Nombre, String ApellidoPaterno, String ApellidoMaterno, String NumeroTelefonico, Date FechaNacimiento, String CURP, String Username, String Sexo, String Celular, String Email, String Imagen,int Status,String Password, Rol Rol) {
+       this.IdUsuario = IdUsuario;
         this.Nombre = Nombre;
         this.ApellidoPaterno = ApellidoPaterno;
         this.ApellidoMaterno = ApellidoMaterno;
