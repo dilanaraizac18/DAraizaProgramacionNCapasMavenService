@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("demo/api")
-public class DemoRestController {
+public class UsuarioController {
     
     @Autowired
     private UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
