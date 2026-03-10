@@ -4,7 +4,8 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.RestController;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.PaisDAOJPAImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.RolDAOImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.RolDAOJPAImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,23 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Dilan
  */
 @RestController
-@RequestMapping("api/pais")
-public class PaisRestController {
+@RequestMapping("api/rol")
+public class RolRestController {
     
     @Autowired
-    private PaisDAOJPAImplementation paisDAOJPAImplementation;
+    private RolDAOJPAImplementation rolDAOJPAImplementation;
     
     @GetMapping
-    public ResponseEntity GetPais(){
-        Result result;
+    public ResponseEntity GetRol (){
+        Result result = new Result();
         
-       try{
-           result = paisDAOJPAImplementation.GetPais();
-       } catch(Exception ex){
-           return ResponseEntity.status(500).body(ex);
-       }
-       
-       return ResponseEntity.ok(result);
+        try{
+            result = rolDAOJPAImplementation.GetRol();
+        } catch(Exception ex){
+            return ResponseEntity.status(500).body(ex);
+        }
+        
+        return ResponseEntity.ok(result);
     }
-    
 }

@@ -10,6 +10,6 @@ import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
  *
  * @author Dilan
  */
-public interface IPaisJPA {
-    Result GetPais();
+public interface IRolJPA {
+   Result GetRol(); 
 }

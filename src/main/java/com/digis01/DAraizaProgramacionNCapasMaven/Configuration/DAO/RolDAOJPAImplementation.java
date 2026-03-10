@@ -4,8 +4,8 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO;
 
-import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Pais;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Rol;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 import java.util.ArrayList;
@@ -18,30 +18,28 @@ import org.springframework.stereotype.Repository;
  * @author Dilan
  */
 @Repository
-public class PaisDAOJPAImplementation implements IPaisJPA{
-    
+public class RolDAOJPAImplementation implements IRolJPA{
+
     @Autowired
     private EntityManager entityManager;
     
     @Override
-    public Result GetPais() {
-
-        Result result = new Result();
+    public Result GetRol() {
         
-       try{
-           
-           TypedQuery<Pais> paisQuery = entityManager.createQuery("From Pais", Pais.class);
-           List <Pais> pais = paisQuery.getResultList();
+        Result result = new Result();
+        try{
+            TypedQuery<Rol> rolQuery = entityManager.createQuery("From Rol", Rol.class);
+             List <Rol> rol = rolQuery.getResultList();
 
-            result.objects = (List<Object>) (Object) pais;
+            result.objects = (List<Object>) (Object) rol;
             result.correct = true;
-           
-       }catch(Exception ex){
-           result.correct = false;
-           result.errorMessage = ex.getLocalizedMessage();
-           result.ex = ex;
-       }
-       return result;
+        } catch(Exception ex){
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+        }
+        
+        return result;
     }
     
 }
