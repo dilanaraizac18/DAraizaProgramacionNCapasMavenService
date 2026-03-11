@@ -59,10 +59,23 @@ public class UsuarioRestController {
     
     @GetMapping("{idUsuario}")
     public ResponseEntity GetById(@PathVariable ("idUsuario") int idUsuario){
-        Result result = new Result();
-        result = usuarioDAOJPAImplementation.GetById(idUsuario);
         
-        return ResponseEntity.ok(result.object);
+        try {
+            Result result = usuarioDAOJPAImplementation.GetById(idUsuario);
+
+            if (result.correct) {
+                if (result.object != null) {
+                    return ResponseEntity.ok(result);
+                } else {
+                    return ResponseEntity.notFound().build();
+                }
+            } else {
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e);
+        }
     }
     
     

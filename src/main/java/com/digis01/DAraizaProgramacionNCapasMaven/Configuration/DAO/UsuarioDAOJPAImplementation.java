@@ -123,20 +123,14 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
             
              if (usuariojpa != null) {
 
-            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuarioML =
-                    modelMapper.map(
-                            usuariojpa,
-                            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario.class
-                    );
-
-            result.object = usuarioML;
-            result.correct = true;
+           
+            result.object = usuariojpa;
 
         } else {
             result.correct = false;
             result.errorMessage = "Usuario no encontrado";
         }
-            
+            result.correct = true;
         }catch( Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
