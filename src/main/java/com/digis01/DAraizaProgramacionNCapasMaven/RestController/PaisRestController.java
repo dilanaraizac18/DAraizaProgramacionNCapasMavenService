@@ -26,7 +26,7 @@ public class PaisRestController {
     
     @GetMapping
     public ResponseEntity GetPais(){
-        Result result;
+        Result result = new Result();
         
        try{
            result = paisDAOJPAImplementation.GetPais();
