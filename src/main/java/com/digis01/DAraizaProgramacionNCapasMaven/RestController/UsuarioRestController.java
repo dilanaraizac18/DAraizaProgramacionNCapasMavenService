@@ -228,6 +228,20 @@ public class UsuarioRestController {
 //        }
 //    }
 //    
-    
+    @PutMapping("/Direccion")
+    public ResponseEntity UpdateDireccion(@RequestBody Direccion direccion){
+        try{
+            Result result = usuarioDAOJPAImplementation.UpdateDireccion(direccion);
+            
+            if(result.correct){
+                return ResponseEntity.ok().body(result);
+            }else{
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+            
+        }catch(Exception ex){
+            return ResponseEntity.status(500).body(ex);
     }
-
+        
+    }
+}

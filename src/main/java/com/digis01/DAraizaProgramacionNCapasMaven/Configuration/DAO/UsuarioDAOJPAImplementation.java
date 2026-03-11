@@ -329,7 +329,38 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
 
         return result;
     }
+    
+    @Override
+    @Transactional
+    public Result UpdateDireccion(Direccion direccion){
+        Result result = new Result();
+    
+    try{
+       
+            Direccion direccionupdate = entityManager.find(Direccion.class, direccion.getIdDireccion());
+            
+            direccionupdate.setCalle(direccion.getCalle());
+            direccionupdate.setNumeroInterior(direccion.getNumeroInterior());
+            direccionupdate.setNumeroExterior(direccion.getNumeroExterior());
+            direccionupdate.colonia = new Colonia();
+            direccionupdate.colonia.setIdColonia(direccion.getColonia().getIdColonia());
+            
+            
+            
+            //sin esto va a querer hacer insert en ves de update
+//            direccionAntigua.setIdDireccion(identificador);
+
+            //
+            entityManager.merge(direccionupdate);
+            result.correct = true;
+    
+    }catch (Exception ex){
+        result.correct = false;
+        result.errorMessage = ex.getLocalizedMessage();
+        result.ex = ex;
+}
 
    
-    
+    return result;
+    }
 }
