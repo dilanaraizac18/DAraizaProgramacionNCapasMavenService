@@ -30,11 +30,17 @@ public class PaisRestController {
         
        try{
            result = paisDAOJPAImplementation.GetPais();
+           
+               if (result.correct) {
+                return ResponseEntity.ok(result);
+            }else{
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
        } catch(Exception ex){
            return ResponseEntity.status(500).body(ex);
        }
        
-       return ResponseEntity.ok(result);
+       
     }
     
 }

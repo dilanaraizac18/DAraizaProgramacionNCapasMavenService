@@ -3,6 +3,7 @@ package com.digis01.DAraizaProgramacionNCapasMaven.RestController;
 
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOJPAImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -26,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("demo/api")
-public class UsuarioController {
+public class UsuarioRestController {
     
     @Autowired
     private UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
@@ -63,53 +65,30 @@ public class UsuarioController {
         return ResponseEntity.ok(result.object);
     }
     
+    
     @PostMapping (consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity Add(@RequestPart ("usuario") Usuario usuario, @RequestPart (name = "imagen", required = false) MultipartFile imagen ){
-        Result result = new Result();
-       try {
-            String nombreArchivo = imagen.getOriginalFilename();
-
-            String[] cadena = nombreArchivo.split("\\.");
-            if (cadena[1].equals(
-                    "jpg") || cadena[1].equals("png")) {
-                try {
-                    byte[] fileContent = imagen.getBytes();
-
-                    String encodedString = Base64.getEncoder().encodeToString(fileContent);
-
-                    System.out.println(encodedString);
-
-                    usuario.setImagen(encodedString);
-
-                } catch (Exception ex) {
-                    result.correct = false;
-                    result.errorMessage = ex.getLocalizedMessage();
-                    result.ex = ex;
-                }
-
-                // realizar la conversión de imagen a base 64; 
-            } else if (imagen
-                    != null) {
-                System.out.println("Error");
-
-                
-            }
-
-       
-            Result resultadd = usuarioDAOJPAImplementation.ADD(usuario);
+    public ResponseEntity Add(@RequestPart ("datos") Usuario usuario, @RequestPart(name = "imagen", required = false) MultipartFile imagen) {
+        try {
             
-            if(result.correct){
-                return ResponseEntity.ok(resultadd.object);
+            if (imagen != null && !imagen.isEmpty()) {
+                byte[] bytes = imagen.getBytes();
+                String base64 = Base64.getEncoder().encodeToString(bytes);
+                usuario.setImagen(base64);
             }
-            else{
+            
+            Result result = usuarioDAOJPAImplementation.ADD(usuario);
+
+            if (result.correct) {
+                return ResponseEntity.ok(result.object);
+            } else {
                 return ResponseEntity.badRequest().body(result.errorMessage);
             }
-            
-            
-        }catch (Exception ex){
-           return  ResponseEntity.status(500).body(ex);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e);
         }
     }
+
     
     @PutMapping
     public ResponseEntity Update(@RequestBody Usuario usuario){
@@ -165,7 +144,67 @@ public class UsuarioController {
         
     }
     
+     @DeleteMapping("/Delete/Direccion")
+    public ResponseEntity DeleteDireccion(@RequestParam("identificador") int identificador) {
+        try {
+            Result result = usuarioDAOJPAImplementation.DeleteDireccion(identificador);
+            if (result.correct) {
+                return ResponseEntity.ok("exito en el borrado " + result);
+            } else {
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getLocalizedMessage());
+        }
+    }
     
+      @GetMapping("/Direccion/{IdDireccion}")
+    public ResponseEntity GetByIdDireccion(@PathVariable("IdDireccion") int identificador) {
+        Result result = new Result();
+        try {
+            result = usuarioDAOJPAImplementation.DireccionGetById(identificador);
+            if (result.correct) {
+                return ResponseEntity.ok(result);
+            } else {
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getLocalizedMessage());
+        }
+    }
+    
+        @PostMapping("/Direccion")
+    public ResponseEntity AddDireccion(@RequestBody Direccion direccion, @RequestParam("identificador") int identificador) {
+        try {
+            Result result = usuarioDAOJPAImplementation.AddDireccion(direccion, identificador);
+
+            if (result.correct) {
+                return ResponseEntity.ok(result.object);
+            } else {
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getMessage());
+        }
+    }
+  
+//      @PatchMapping("/Estatus")
+//    public ResponseEntity UpdateEstatus(@RequestParam("identificador") int identificador, @RequestParam("estatus") int estatus){
+//        try {
+//            Result result = usuarioDAOJPAImplementation.UpdateEstatus(identificador, estatus);
+//            if (result.correct) {
+//                return ResponseEntity.ok().body(result);
+//            }else{
+//                return ResponseEntity.badRequest().body(result.errorMessage);
+//            }
+//        } catch (Exception e) {
+//            return ResponseEntity.status(500).body(e.getLocalizedMessage());
+//        }
+//    }
+//    
     
     }
 

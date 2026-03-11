@@ -112,6 +112,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
     }
 
     @Override
+        @Transactional
     public Result GetById(int idUsuario) {
         ModelMapper modelMapper = new ModelMapper();
         
@@ -155,7 +156,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
             com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuariojpa = entityManager.find(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario.class, idusuario);
             
             entityManager.remove(usuariojpa);
-            
+            result.correct = true;
             
         }catch(Exception ex){
             result.correct = false;
