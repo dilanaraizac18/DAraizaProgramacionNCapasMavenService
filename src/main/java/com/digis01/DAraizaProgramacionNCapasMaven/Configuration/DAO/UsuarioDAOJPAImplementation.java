@@ -61,42 +61,13 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
     
     @Override
     @Transactional
-    public Result ADD(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuario){
+    public Result ADD(Usuario usuario){
         Result result = new Result();
         
         try{
-            Usuario usuariojpa = new Usuario();
-            
-            usuariojpa.setNombre(usuario.getNombre());
-            usuariojpa.setApellidoPaterno(usuario.getApellidoPaterno());
-            usuariojpa.setApellidoMaterno(usuario.getApellidoMaterno());
-            usuariojpa.setEmail(usuario.getEmail());
-            usuariojpa.setFechaNacimiento(usuario.getFechaNacimiento());
-            usuariojpa.setNumeroTelefonico(usuario.getNumeroTelefonico());
-            usuariojpa.setCelular(usuario.getNumeroTelefonico());
-            usuariojpa.setUsername(usuario.getUsername());
-            usuariojpa.setImagen(usuario.getImagen());
-            usuariojpa.setPassword(usuario.getPassword());
-
-            usuariojpa.Rol = new Rol();
-            usuariojpa.Rol.setidRol(usuario.Rol.getidRol());
-            
-            usuariojpa.Direcciones = new ArrayList<>();
-            Direccion direccionjpa = new Direccion();
-            direccionjpa.colonia = new Colonia();
-            
-            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccion = usuario.Direcciones.get(0);
-            
-            direccionjpa.setCalle(direccion.getCalle());
-            direccionjpa.setNumeroInterior(direccion.getNumeroInterior());
-            direccionjpa.setNumeroExterior(direccion.getNumeroExterior());
-            direccionjpa.colonia.setIdColonia(direccion.colonia.getIdColonia());
             
             
-            usuariojpa.Direcciones.add(direccionjpa);
-            direccionjpa.usuario = usuariojpa;
-            
-            entityManager.persist(usuariojpa);
+            entityManager.persist(usuario);
             
             result.correct = true;
             
@@ -165,14 +136,15 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
 
     @Override
     @Transactional
-    public Result UpdateImagen(int idUsuario) {
+    public Result UpdateImagen(int idUsuario, String imagen) {
         Result result = new Result();
         
         try{
-            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario usuariojpa = entityManager.find(com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario.class, idUsuario);
+            Usuario usuariojpa = entityManager.find(Usuario.class, idUsuario);
 
             if(usuariojpa != null){
-                usuariojpa.setImagen(usuariojpa.getImagen());
+                usuariojpa.setImagen(imagen);
+//                entityManager.merge(usuariojpa);
                 
                 result.correct = true;
             }else{
@@ -340,7 +312,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
         try {
 
             ModelMapper modelMapper = new ModelMapper();
-            com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion direccionjpa = modelMapper.map(direccion,  com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion.class);
+            Direccion direccionjpa = modelMapper.map(direccion, Direccion.class);
 
             Usuario usuariojpa = new Usuario();
             usuariojpa.setIdUsuario(idUsuario);

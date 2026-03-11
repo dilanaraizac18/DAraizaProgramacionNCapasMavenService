@@ -17,7 +17,7 @@ public interface IUsuarioJPA {
     Result ADD(Usuario usuario);
     Result GetById(int idUsuario);
     Result Delete(int idusuario);
-    Result UpdateImagen(int idUsuario);
+    Result UpdateImagen(int idUsuario, String imagen);
 //    Result Updateusuario(Usuario usuario);
     Result UpdateUsuario(Usuario usuario);
     Result DireccionGetById(int idUsuario);

@@ -121,20 +121,30 @@ public class UsuarioRestController {
     }
     
     @PutMapping ("/imagen/{idusuario}")
-    public ResponseEntity UpdateImagen (@PathVariable ("idusuario") int idusuario){
+    public ResponseEntity UpdateImagen (@PathVariable ("idusuario") int idusuario, @RequestPart (name = "imagen") MultipartFile imagen){
         try{
-            Result result = usuarioDAOJPAImplementation.UpdateImagen(idusuario);
             
-            if (result.correct){
-                return ResponseEntity.ok(result);
-            }
-            else{
-                return ResponseEntity.badRequest().body(result.errorMessage);
-            }
+    
+                byte[] bytes = imagen.getBytes();
+                String base64 = Base64.getEncoder().encodeToString(bytes);
+                Result result = usuarioDAOJPAImplementation.UpdateImagen(idusuario, base64);
+                
+                
+
+                            if (result.correct){
+                                return ResponseEntity.ok(result);
+                            }
+                            else{
+                                return ResponseEntity.badRequest().body(result.errorMessage);
+                            }
+            
+            
+            
                     
            } catch(Exception ex){
             return ResponseEntity.status(500).body(ex);
         }
+        
     }
     
     @DeleteMapping ("/delete/{idusuario}")
