@@ -3,11 +3,29 @@ package com.digis01.DAraizaProgramacionNCapasMaven.RestController;
 
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOJPAImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Colonia;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Direccion;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.ErroresArchivo;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Rol;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
+import jakarta.servlet.http.HttpSession;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HexFormat;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -244,4 +262,182 @@ public class UsuarioRestController {
     }
         
     }
+    
+     @PostMapping("/cargarArchivo")
+    public ResponseEntity<String> CargaArchivo(@RequestPart("archivo") MultipartFile archivo, HttpSession session) {
+        Result result = new Result();
+        List<Usuario> usuarios = new ArrayList<>();
+        try {
+            if (archivo != null) {
+
+                String rutaBase = System.getProperty("user.dir");
+                String rutaCarpeta = "src/main/resources/archivosCM";
+                String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmSS"));
+                String nombreArchivo = fecha + archivo.getOriginalFilename();
+                String rutaArchivo = rutaBase + "/" + rutaCarpeta + "/" + nombreArchivo;
+                String extension = archivo.getOriginalFilename().split("\\.")[1];
+
+                File archivoFile = new File(rutaArchivo);
+
+                if (extension.equals("txt")) {
+                    archivo.transferTo(new File(rutaArchivo));
+                    usuarios = LecturaArchivoTxt(archivoFile);
+                } else if (extension.equals("xlsx")) {
+//                    archivo.transferTo(new File(rutaArchivo));
+//                    usuarios = LecturaArchivoXLSX(new File(rutaArchivo));
+                } else {
+                    System.out.println("Extensión erronea, manda archivos del formato solicitado");
+                }
+                List<ErroresArchivo> errores = null;
+                if (!usuarios.isEmpty()) {
+                    errores = ValidarDatos(usuarios);
+                }
+
+                if (errores.isEmpty()) {
+                    registrarEnBitacora(rutaArchivo, "SUCCESS", "Carga completada correctamente");
+                    result.correct = true;
+
+                } else {
+                    registrarEnBitacora(rutaArchivo, "FAILED", result.errorMessage);
+                }
+
+            }
+        } catch (Exception e) {
+            result.correct = false;
+            result.errorMessage = e.getLocalizedMessage();
+            result.ex = e;
+        }
+
+        return ResponseEntity.ok("Archivo procesado correctamente");
+    }
+
+    public List<Usuario> LecturaArchivoTxt(File archivo) {
+        Result result = new Result();
+        List<Usuario> usuarios = null;
+        SimpleDateFormat formatoFecha = new SimpleDateFormat("dd/MM/yyyy");
+
+        try (InputStream inputStream = new FileInputStream(archivo); BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+            String linea;
+            usuarios = new ArrayList<>();
+
+            while ((linea = br.readLine()) != null) {
+
+                String[] datos = linea.split("\\|");
+
+                if (datos.length >= 1) {
+                    Usuario usuario = new Usuario();
+                    usuario.Rol = new Rol();
+                    usuario.Direcciones = new ArrayList<>();
+
+                    usuario.setNombre(datos[0].trim());
+                    usuario.setApellidoPaterno(datos[1].trim());
+                    usuario.setApellidoMaterno(datos[2].trim());
+                    try {
+                        String fecha = datos[3].trim();
+                        System.out.println(fecha);
+                        usuario.setFechaNacimiento(formatoFecha.parse(fecha));
+                    } catch (Exception e) {
+                        result.errorMessage = e.getLocalizedMessage();
+                    }
+
+                    System.out.println(usuario.getFechaNacimiento());
+
+                    usuario.setNumeroTelefonico(datos[4].trim());
+                    usuario.setEmail(datos[5].trim());
+                    usuario.setUsername(datos[6].trim());
+                    usuario.setPassword(datos[7].trim());
+                    usuario.setSexo(datos[8].trim());
+                    usuario.setCelular(datos[9].trim());
+                    usuario.setCURP(datos[10].trim());
+                    try {
+                        int idRol = Integer.parseInt(datos[11].trim());
+                        usuario.Rol.setidRol(idRol);
+                    } catch (NumberFormatException e) {
+                        usuario.Rol.setidRol(0);
+                    }
+
+                    usuario.setImagen(datos[12].trim());
+
+                    //DIRECCION
+                    Direccion direccion = new Direccion();
+                    direccion.colonia = new Colonia();
+                    direccion.setCalle(datos[13].trim());
+                    direccion.setNumeroExterior(datos[14].trim());
+                    direccion.setNumeroInterior(datos[15].trim());
+                    direccion.colonia.setIdColonia(Integer.parseInt(datos[16].trim()));
+
+                    usuario.Direcciones.add(direccion);
+                    usuarios.add(usuario);
+                }
+            }
+        } catch (IOException e) {
+            result.correct = false;
+            result.errorMessage = e.getLocalizedMessage();
+            result.ex = e;
+        }
+        return usuarios;
+    }
+
+    public List<ErroresArchivo> ValidarDatos(List<Usuario> usuarios) {
+        List<ErroresArchivo> errores = new ArrayList<>();
+        int numeroFila = 1; // sin encabezados
+
+        if (usuarios.isEmpty()) {
+
+            for (Usuario usuario : usuarios) {
+
+//                BindingResult bindingResult = validationService.ValidateObject(usuario);
+//
+//                if (bindingResult.hasErrors()) {
+//                    ErroresArchivo erroresArchivo = new ErroresArchivo();
+//                    for (ObjectError objectError : bindingResult.getAllErrors()) {
+//
+////                    erroresArchivo.dato = objectError.getObjectName();
+//                        erroresArchivo.dato = ((FieldError) objectError).getField();
+//                        erroresArchivo.descripcion = objectError.getDefaultMessage();
+//                        erroresArchivo.fila = numeroFila;
+//
+//                        errores.add(erroresArchivo);
+//                    }
+//
+//                }
+                numeroFila++;
+            }
+        } else {
+            ErroresArchivo erroresArchivo = new ErroresArchivo();
+            erroresArchivo.dato = "FORMATO EQUIVOCADO";
+            erroresArchivo.descripcion = "FORMATO ERRONEO";
+            erroresArchivo.fila = 0;
+            errores.add(erroresArchivo);
+        }
+        return errores;
+    }
+
+    public String generarKeySHA256(String ruta) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(ruta.getBytes(StandardCharsets.UTF_8));
+            return HexFormat.of().formatHex(hash); // Convierte bytes a Hexadecimal
+        } catch (Exception e) {
+            return "ERROR_HASH";
+        }
+    }
+
+    public void registrarEnBitacora(String rutaArchivo, String estatus, String detalleError) {
+        String RUTA_LOG = "src/main/resources/log/bitacora.txt";
+        String key = generarKeySHA256(rutaArchivo);
+        String fechaHora = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+
+        // Formato: key|ruta|estatus|fechahora|detalleDelError
+        String linea = String.format("%s|%s|%s|%s|%s",
+                key, rutaArchivo, estatus, fechaHora, (detalleError == null ? "" : detalleError));
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(RUTA_LOG, true))) {
+            writer.write(linea);
+            writer.newLine();
+        } catch (IOException e) {
+            System.err.println("Error escribiendo en la bitácora: " + e.getMessage());
+        }
+    }
+
 }
