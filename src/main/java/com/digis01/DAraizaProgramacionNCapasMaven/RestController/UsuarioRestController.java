@@ -138,7 +138,7 @@ public class UsuarioRestController {
         }
     }
     
-    @PutMapping ("/imagen/{idusuario}")
+    @PostMapping ("/imagen/{idusuario}")
     public ResponseEntity UpdateImagen (@PathVariable ("idusuario") int idusuario, @RequestPart (name = "imagen") MultipartFile imagen){
         try{
             
