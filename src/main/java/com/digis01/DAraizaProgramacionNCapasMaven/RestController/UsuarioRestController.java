@@ -185,12 +185,12 @@ public class UsuarioRestController {
         
     }
     
-     @DeleteMapping("/Delete/Direccion")
-    public ResponseEntity DeleteDireccion(@RequestParam("identificador") int identificador) {
+     @DeleteMapping("/Delete/Direccion/{identificador}")
+    public ResponseEntity DeleteDireccion(@PathVariable ("identificador") int identificador) {
         try {
             Result result = usuarioDAOJPAImplementation.DeleteDireccion(identificador);
             if (result.correct) {
-                return ResponseEntity.ok("exito en el borrado " + result);
+                return ResponseEntity.ok(result);
             } else {
                 return ResponseEntity.badRequest().body(result.errorMessage);
             }
