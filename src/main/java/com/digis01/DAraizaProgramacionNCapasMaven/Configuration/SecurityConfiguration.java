@@ -5,7 +5,7 @@
 package com.digis01.DAraizaProgramacionNCapasMaven.Configuration;
 
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOJPAImplementation;
-import com.digis01.DAraizaProgramacionNCapasMaven.Service.UserDetailJPA;
+import com.digis01.DAraizaProgramacionNCapasMaven.Service.UserDetailJPAService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,9 +22,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfiguration {
     
-    private final UserDetailJPA userDetailJPA;
+    private final UserDetailJPAService userDetailJPA;
     
-    public SecurityConfiguration (UserDetailJPA userDetailJPA){
+    public SecurityConfiguration (UserDetailJPAService userDetailJPA){
         this.userDetailJPA = userDetailJPA;
     }
     @Bean
