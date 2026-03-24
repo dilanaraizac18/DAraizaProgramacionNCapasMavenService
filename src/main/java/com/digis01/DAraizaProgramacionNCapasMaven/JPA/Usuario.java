@@ -69,16 +69,18 @@ public class Usuario {
 //    @Pattern(regexp = "^[a-zA-Z ]+[0-9]+$", message = "Introduzca minimo una letra y minimo un numero")
     private String Username;
     
-    @Column(name= "Sexo")
+    @Column(name= "sexo")
     private String Sexo;
     
     @Column(name = "celular")
 //    @Pattern(regexp = "^[0-9]{10}$", message = "Solo numeros")
     @Size(min = 10, max = 10, message = "Debe haber minimo 10 numeros")
     private String Celular;
+    
+    //    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z]+.com$", message = "formato invalido")
+    //@NotEmpty(message = "No puedo ser vacio")
+
     @Column(name = "email")
-//    @Pattern(regexp = "^[a-zA-Z0-9._%+-]+@[a-zA-Z]+.com$", message = "formato invalido")
-    @NotEmpty(message = "No puedo ser vacio")
     private String Email;
     
     @Column(name="password")

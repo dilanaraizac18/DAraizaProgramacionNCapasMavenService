@@ -370,7 +370,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
         Result result = new Result();
         try {
 
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("FROM Alumno WHERE Email = :pEmail", Usuario.class);
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("FROM Usuario WHERE Email = :pEmail", Usuario.class);
             queryUsuario.setParameter("pEmail", Email);
 
             result.object = queryUsuario.getSingleResult();
