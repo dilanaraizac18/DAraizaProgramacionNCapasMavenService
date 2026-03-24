@@ -14,11 +14,13 @@ import java.util.Map;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Service;
 
 /**
  *
  * @author Dilan
  */
+@Service
 public class JwtService {
      private static final String SECRET_KEY = "M2Y0ZTVnNmg4ajlrMG0xbnJwOXFyc3R1dnd4eXphYmNkZWZnaGk="; //mayor a 32 bytes 
     private static final long EXPIRATION_TIME = 3600000; // 1 hora para expiración // con base en uso 3 usos por sesión
