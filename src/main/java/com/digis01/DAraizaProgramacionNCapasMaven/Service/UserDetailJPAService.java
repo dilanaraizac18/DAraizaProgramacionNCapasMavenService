@@ -7,6 +7,7 @@ package com.digis01.DAraizaProgramacionNCapasMaven.Service;
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOJPAImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailJPAService implements UserDetailsService{
     
+    @Autowired
     private final UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
     
     public UserDetailJPAService(UsuarioDAOJPAImplementation usuarioDAOJPAImplementation){
