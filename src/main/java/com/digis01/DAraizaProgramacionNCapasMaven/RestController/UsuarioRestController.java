@@ -69,6 +69,7 @@ public class UsuarioRestController {
     
     
     @GetMapping()
+            @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity ObtenerDatos(){
         Result result = new Result();
         try{
@@ -112,7 +113,7 @@ public class UsuarioRestController {
     }
     
     @PostMapping (consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-        @PreAuthorize("hasRole('Invitado')")
+        @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity Add(@RequestPart ("datos") Usuario usuario, @RequestPart(name = "imagen", required = false) MultipartFile imagen) {
         try {
             
@@ -136,7 +137,7 @@ public class UsuarioRestController {
     }
 
     @PutMapping
-        @PreAuthorize("hasRole('Invitado')")
+        @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity Update(@RequestBody Usuario usuario){
         try{
             Result result = usuarioDAOJPAImplementation.UpdateUsuario(usuario);
@@ -153,7 +154,7 @@ public class UsuarioRestController {
         }
     }
     @PostMapping ("/imagen/{idusuario}")
-        @PreAuthorize("hasRole('Invitado')")
+        @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity UpdateImagen (@PathVariable ("idusuario") int idusuario, @RequestPart (name = "imagen") MultipartFile imagen){
         try{
             
@@ -181,7 +182,7 @@ public class UsuarioRestController {
     }
     
     @DeleteMapping ("/delete/{idusuario}")
-        @PreAuthorize("hasRole('Invitado')")
+        @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity DeleteUsuario (@PathVariable ("idusuario") int idusuario){
         
         try{
@@ -202,7 +203,7 @@ public class UsuarioRestController {
     }
     
      @DeleteMapping("/Delete/Direccion/{identificador}")
-         @PreAuthorize("hasRole('Invitado')")
+         @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity DeleteDireccion(@PathVariable ("identificador") int identificador) {
         try {
             Result result = usuarioDAOJPAImplementation.DeleteDireccion(identificador);
@@ -218,7 +219,7 @@ public class UsuarioRestController {
     }
     
       @GetMapping("/Direccion/{IdDireccion}")
-          @PreAuthorize("hasRole('Invitado')")
+          @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity GetByIdDireccion(@PathVariable("IdDireccion") int identificador) {
         Result result = new Result();
         try {
@@ -235,7 +236,7 @@ public class UsuarioRestController {
     }
     
         @PostMapping("/Direccion")
-            @PreAuthorize("hasRole('Invitado')")
+            @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity AddDireccion(@RequestBody Direccion direccion, @RequestParam("identificador") int identificador) {
         try {
             Result result = usuarioDAOJPAImplementation.AddDireccion(direccion, identificador);
@@ -266,7 +267,7 @@ public class UsuarioRestController {
 //    }
 //    
     @PutMapping("/Direccion")
-        @PreAuthorize("hasRole('Invitado')")
+        @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity UpdateDireccion(@RequestBody Direccion direccion){
         try{
             Result result = usuarioDAOJPAImplementation.UpdateDireccion(direccion);
@@ -284,7 +285,7 @@ public class UsuarioRestController {
     }
     
      @PostMapping("/cargarArchivo")
-         @PreAuthorize("hasRole('Invitado')")
+         @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity<String> CargaArchivo(@RequestPart("archivo") MultipartFile archivo, HttpSession session) {
         Result result = new Result();
         List<Usuario> usuarios = new ArrayList<>();
