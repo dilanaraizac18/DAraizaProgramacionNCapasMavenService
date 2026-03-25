@@ -33,6 +33,7 @@ public class SecurityConfiguration {
     @Autowired
     private JwtAuthenticationFilter jwtAuthentication;
     
+    @Autowired
     private final UserDetailJPAService userDetailJPA;
     
     public SecurityConfiguration (UserDetailJPAService userDetailJPA){

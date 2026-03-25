@@ -9,6 +9,7 @@ import com.digis01.DAraizaProgramacionNCapasMaven.JPA.ErroresArchivo;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Rol;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
+import io.jsonwebtoken.security.Jwks;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -25,12 +26,16 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.HexFormat;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,10 +57,18 @@ public class UsuarioRestController {
     @Autowired
     private UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
     
+    @GetMapping("test")
+   public ResponseEntity Test (Authentication autentication){
+       Map<String, Object> JSON = new HashMap<> ();
+       
+       JSON.put("User",  autentication.getName());
+       JSON.put("Rol", autentication.getAuthorities());
+       
+       return ResponseEntity.ok(JSON);
+   }
     
     
     @GetMapping()
-    @PreAuthorize("hasRole('Invitado')")
     public ResponseEntity ObtenerDatos(){
         Result result = new Result();
         try{
