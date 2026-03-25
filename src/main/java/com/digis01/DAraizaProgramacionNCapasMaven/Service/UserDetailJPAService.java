@@ -35,7 +35,7 @@ public class UserDetailJPAService implements UserDetailsService{
         
         Usuario usuario = (Usuario) result.object;
         
-        return User.withUsername(usuario.getUsername())
+        return User.withUsername(usuario.getEmail())
                 .password(usuario.getPassword())
                 .roles(usuario.Rol.getNombreRol())
                 .disabled(usuario.getStatus() ==0)
