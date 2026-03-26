@@ -23,11 +23,11 @@ import org.springframework.stereotype.Service;
 public class UserDetailJPAService implements UserDetailsService{
     
     @Autowired
-    private final UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
+    private UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
     
-    public UserDetailJPAService(UsuarioDAOJPAImplementation usuarioDAOJPAImplementation){
-        this.usuarioDAOJPAImplementation = usuarioDAOJPAImplementation;
-    }
+//    public UserDetailJPAService(UsuarioDAOJPAImplementation usuarioDAOJPAImplementation){
+//        this.usuarioDAOJPAImplementation = usuarioDAOJPAImplementation;
+//    }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -39,7 +39,7 @@ public class UserDetailJPAService implements UserDetailsService{
         return new CustomUserDetailsService(
                 usuario.getEmail(),
                 usuario.getPassword(),
-                usuario.getStatus() ==0,
+                usuario.getStatus() !=0,
                 AuthorityUtils.createAuthorityList("ROLE_" + usuario.Rol.getNombreRol().trim()),
                 usuario.getIdUsuario()
                 );

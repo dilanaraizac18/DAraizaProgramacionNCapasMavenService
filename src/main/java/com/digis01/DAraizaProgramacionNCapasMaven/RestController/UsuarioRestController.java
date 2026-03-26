@@ -97,6 +97,26 @@ public class UsuarioRestController {
         try {
             Result result = usuarioDAOJPAImplementation.GetById(idUsuario);
 
+            Usuario usuario = (Usuario) result.object;
+            
+             String userLog = authentication.getName();
+            boolean admin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_Administrador"));
+
+            if (admin || usuario.getUsername().equals(userLog)) {
+                if (result.correct) {
+                    if (result.object != null) {
+                        return ResponseEntity.ok(result);
+                    } else {
+                        return ResponseEntity.notFound().build();
+                    }
+                } else {
+                    return ResponseEntity.badRequest().body(result.errorMessage);
+                }
+
+            }
+            
+            
             if (result.correct) {
                 if (result.object != null) {
                     return ResponseEntity.ok(result);
