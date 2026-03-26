@@ -8,6 +8,7 @@ import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOJP
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -35,11 +36,13 @@ public class UserDetailJPAService implements UserDetailsService{
         
         Usuario usuario = (Usuario) result.object;
         
-        return User.withUsername(usuario.getEmail())
-                .password(usuario.getPassword())
-                .roles(usuario.Rol.getNombreRol())
-                .disabled(usuario.getStatus() ==0)
-                .build();
+        return new CustomUserDetailsService(
+                usuario.getEmail(),
+                usuario.getPassword(),
+                usuario.getStatus() ==0,
+                AuthorityUtils.createAuthorityList("ROLE_" + usuario.Rol.getNombreRol().trim()),
+                usuario.getIdUsuario()
+                );
     }
     
     

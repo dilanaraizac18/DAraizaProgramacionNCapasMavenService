@@ -4,6 +4,10 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.Service;
 
+import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOJPAImplementation;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
@@ -13,6 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import javax.crypto.SecretKey;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -22,17 +28,27 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JwtService {
+    
+    @Autowired
+    @Lazy
+    UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
+    
      private static final String SECRET_KEY = "M2Y0ZTVnNmg4ajlrMG0xbnJwOXFyc3R1dnd4eXphYmNkZWZnaGk="; //mayor a 32 bytes 
     private static final long EXPIRATION_TIME = 3600000; // 1 hora para expiración // con base en uso 3 usos por sesión
 
+    
+    
     private SecretKey getSigningKey() {
         byte[] keyBytes = SECRET_KEY.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(UserDetails user) {
+        Result result = usuarioDAOJPAImplementation.GetByEmail(user.getUsername());
+        Usuario usuario = (Usuario) result.object;
         Map<String, Object> extraClaims = new HashMap<>();
         extraClaims.put("role", user.getAuthorities()); // Agregamos el rol al token
+        extraClaims.put("idUsuario", usuario.getIdUsuario());
 
         return Jwts.builder()
                 .claims(extraClaims)
