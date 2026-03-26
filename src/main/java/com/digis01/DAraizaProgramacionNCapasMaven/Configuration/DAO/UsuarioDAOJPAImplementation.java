@@ -62,25 +62,54 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
     @Override
     @Transactional
     public Result ADD(Usuario usuario){
-        Result result = new Result();
-        
-        try{
-            
-            
-            entityManager.persist(usuario);
-            
+           Result result = new Result();
+
+        try {
+
+            Usuario usuariojpa = new Usuario();
+
+            usuariojpa.setNombre(usuario.getNombre());
+            usuariojpa.setApellidoPaterno(usuario.getApellidoPaterno());
+            usuariojpa.setApellidoMaterno(usuario.getApellidoMaterno());
+            usuariojpa.setFechaNacimiento(usuario.getFechaNacimiento());
+            usuariojpa.setNumeroTelefonico(usuario.getNumeroTelefonico());
+            usuariojpa.setEmail(usuario.getEmail());
+            usuariojpa.setUsername(usuario.getUsername());
+            usuariojpa.setPassword(usuario.getPassword());
+            usuariojpa.setSexo(usuario.getSexo());
+            usuariojpa.setCelular(usuario.getCelular());
+            usuariojpa.setCURP(usuario.getCURP());
+            usuariojpa.Rol = new Rol();
+            usuariojpa.Rol.setidRol(usuario.Rol.getidRol());
+            usuariojpa.setImagen(usuario.getImagen());
+
+            usuariojpa.Direcciones = new ArrayList<>();
+            Direccion direccionjpa = new Direccion();
+            direccionjpa.colonia = new Colonia();
+
+            Direccion direccion = usuario.Direcciones.get(0);
+
+            direccionjpa.setCalle(direccion.getCalle());
+            direccionjpa.setNumeroExterior(direccion.getNumeroExterior());
+            direccionjpa.setNumeroInterior(direccion.getNumeroInterior());
+            direccionjpa.colonia.setIdColonia(direccion.colonia.getIdColonia());
+
+            usuariojpa.Direcciones.add(direccionjpa);
+            direccionjpa.usuario = usuariojpa;
+
+            entityManager.persist(usuariojpa);
+
             result.correct = true;
-            
-            
-        }catch(Exception ex){
+
+        } catch (Exception e) {
             result.correct = false;
-            result.errorMessage = ex.getLocalizedMessage();
-            result.ex = ex;
+            result.errorMessage = e.getLocalizedMessage();
+            result.ex = e;
         }
-        
-        
+
         return result;
     }
+    
 
     @Override
         @Transactional

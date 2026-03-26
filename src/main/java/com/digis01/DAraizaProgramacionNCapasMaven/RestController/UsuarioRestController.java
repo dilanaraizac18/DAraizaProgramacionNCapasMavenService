@@ -92,7 +92,7 @@ public class UsuarioRestController {
     }
     
     @GetMapping("{idUsuario}")
-    public ResponseEntity GetById(@PathVariable ("idUsuario") int idUsuario){
+    public ResponseEntity GetById(@PathVariable ("idUsuario") int idUsuario, Authentication authentication){
         
         try {
             Result result = usuarioDAOJPAImplementation.GetById(idUsuario);
@@ -111,9 +111,8 @@ public class UsuarioRestController {
             return ResponseEntity.status(500).body(e);
         }
     }
-    
-    @PostMapping (consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
         @PreAuthorize("hasRole('Administrador')")
+    @PostMapping (consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity Add(@RequestPart ("datos") Usuario usuario, @RequestPart(name = "imagen", required = false) MultipartFile imagen) {
         try {
             
@@ -219,7 +218,7 @@ public class UsuarioRestController {
     }
     
       @GetMapping("/Direccion/{IdDireccion}")
-          @PreAuthorize("hasRole('Administrador')")
+        @PreAuthorize("hasRole('Administrador')")
     public ResponseEntity GetByIdDireccion(@PathVariable("IdDireccion") int identificador) {
         Result result = new Result();
         try {
