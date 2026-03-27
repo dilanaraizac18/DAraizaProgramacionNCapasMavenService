@@ -47,8 +47,13 @@ public class JwtService {
         Result result = usuarioDAOJPAImplementation.GetByEmail(user.getUsername());
         Usuario usuario = (Usuario) result.object;
         Map<String, Object> extraClaims = new HashMap<>();
+        
+        
+        if (user instanceof CustomUserDetailsService) {
+            extraClaims.put("idUsuario", ((CustomUserDetailsService) user).getidUsuario());
+        }
+        
         extraClaims.put("role", user.getAuthorities()); // Agregamos el rol al token
-        extraClaims.put("idUsuario", usuario.getIdUsuario());
 
         return Jwts.builder()
                 .claims(extraClaims)
