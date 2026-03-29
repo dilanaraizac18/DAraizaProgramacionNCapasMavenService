@@ -8,6 +8,7 @@ import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.PaisDAOJPAIm
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +26,8 @@ public class PaisRestController {
     private PaisDAOJPAImplementation paisDAOJPAImplementation;
     
     @GetMapping
-    public ResponseEntity GetPais(){
+       @PreAuthorize("hasAnyRole('Administrador', 'Visor', 'Usuario Estandar')")
+     public ResponseEntity GetPais(){
         Result result = new Result();
         
        try{

@@ -193,6 +193,29 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
         return result;
         
     }
+    
+    @Override
+    @Transactional
+    public Result UpdateStatus(int idUsuario, int status) {
+        Result result = new Result();
+
+        try {
+
+            Usuario usuariojpa = entityManager.find(Usuario.class, idUsuario);
+            usuariojpa.setIdUsuario(idUsuario);
+            usuariojpa.setStatus(status);
+
+            entityManager.merge(usuariojpa);
+            result.correct = true;
+
+        } catch (Exception e) {
+            result.correct = false;
+            result.errorMessage = e.getLocalizedMessage();
+            result.ex = e;
+        }
+
+        return result;
+    }
 
 //    @Override
 //    @Transactional

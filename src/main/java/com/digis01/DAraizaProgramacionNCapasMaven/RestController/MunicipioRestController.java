@@ -9,6 +9,7 @@ import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.MunicipioDAO
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +27,8 @@ public class MunicipioRestController {
     private MunicipioDAOJPAImplementation municipioDAOJPAImplementation;
     
     @GetMapping
-    public ResponseEntity  MunicipioByIdEstado(@RequestParam ("idEstado") int idEstado){
+        @PreAuthorize("hasAnyRole('Administrador', 'Visor', 'Usuario Estandar')")
+        public ResponseEntity  MunicipioByIdEstado(@RequestParam ("idEstado") int idEstado){
         Result result;
         
         try{

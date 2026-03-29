@@ -1,6 +1,7 @@
 
 package com.digis01.DAraizaProgramacionNCapasMaven.RestController;
 
+import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.RolDAOJPAImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.Configuration.DAO.UsuarioDAOJPAImplementation;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Colonia;
@@ -9,6 +10,7 @@ import com.digis01.DAraizaProgramacionNCapasMaven.JPA.ErroresArchivo;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Rol;
 import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Usuario;
+import com.digis01.DAraizaProgramacionNCapasMaven.Service.CustomUserDetailsService;
 import io.jsonwebtoken.security.Jwks;
 import jakarta.servlet.http.HttpSession;
 import java.io.BufferedReader;
@@ -57,6 +59,9 @@ public class UsuarioRestController {
     @Autowired
     private UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
     
+    @Autowired
+    private RolDAOJPAImplementation rolDAOJPAImplementation;
+    
     @GetMapping("test")
    public ResponseEntity Test (Authentication autentication){
        Map<String, Object> JSON = new HashMap<> ();
@@ -91,6 +96,7 @@ public class UsuarioRestController {
         }
     }
     
+    @PreAuthorize("hasRole('Administrador') or #idusuario == principal.idUsuario")
     @GetMapping("{idUsuario}")
     public ResponseEntity GetById(@PathVariable ("idUsuario") int idUsuario, Authentication authentication){
         
@@ -116,21 +122,14 @@ public class UsuarioRestController {
 
             }
             
-            
-            if (result.correct) {
-                if (result.object != null) {
-                    return ResponseEntity.ok(result);
-                } else {
-                    return ResponseEntity.notFound().build();
-                }
-            } else {
-                return ResponseEntity.badRequest().body(result.errorMessage);
-            }
+                        return ResponseEntity.status(403).body("Rol invalido para acudir a este apartado.");
+           
 
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e);
         }
-    }
+    
+}
         @PreAuthorize("hasRole('Administrador')")
     @PostMapping (consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity Add(@RequestPart ("datos") Usuario usuario, @RequestPart(name = "imagen", required = false) MultipartFile imagen) {
@@ -156,9 +155,28 @@ public class UsuarioRestController {
     }
 
     @PutMapping
-        @PreAuthorize("hasRole('Administrador')")
-    public ResponseEntity Update(@RequestBody Usuario usuario){
+//        @PreAuthorize("hasRole('Administrador')")
+    public ResponseEntity Update(@RequestBody Usuario usuario, @RequestParam(required = false) Integer idUsuario, Authentication authentication){
+        
+        
         try{
+            
+            CustomUserDetailsService customUserDS = (CustomUserDetailsService) authentication.getPrincipal();
+            int userLog = customUserDS.getidUsuario();
+
+            boolean admin = authentication.getAuthorities().stream()
+                    .anyMatch(u -> u.getAuthority().equals("ROLE_Administrador"));
+
+            if (idUsuario != null) {
+                if (!admin) {
+                    return ResponseEntity.status(400).body("No cuenta con los permisos para realizar la tarea");
+                }
+                usuario.setIdUsuario(idUsuario);
+            } else {
+                usuario.setIdUsuario(userLog);
+            }
+            
+            
             Result result = usuarioDAOJPAImplementation.UpdateUsuario(usuario);
             
             if(result.correct){
@@ -222,19 +240,52 @@ public class UsuarioRestController {
     }
     
      @DeleteMapping("/Delete/Direccion/{identificador}")
-         @PreAuthorize("hasRole('Administrador')")
-    public ResponseEntity DeleteDireccion(@PathVariable ("identificador") int identificador) {
+         @PreAuthorize("hasAnyRole('Administrador', 'Visor', 'Usuario Estandar')")
+    public ResponseEntity DeleteDireccion(@PathVariable ("identificador") int identificador, Authentication authentication) {
         try {
-            Result result = usuarioDAOJPAImplementation.DeleteDireccion(identificador);
-            if (result.correct) {
-                return ResponseEntity.ok(result);
-            } else {
-                return ResponseEntity.badRequest().body(result.errorMessage);
+           CustomUserDetailsService userDetails = (CustomUserDetailsService) authentication.getPrincipal();
+            int userLog = userDetails.getidUsuario();
+
+            boolean admin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_Administrador"));
+
+            if (admin) {
+                Result result = usuarioDAOJPAImplementation.DeleteDireccion(identificador);
+                if (result.correct) {
+                    return ResponseEntity.ok("Se ha eliminado la direccion " + result);
+                } else {
+                    return ResponseEntity.badRequest().body(result.errorMessage);
+                }
             }
+
+            Result resultUser = usuarioDAOJPAImplementation.GetById(userLog);
+            Usuario usuario = (Usuario) resultUser.object;
+
+            if (usuario != null && usuario.Direcciones != null) {
+
+                boolean direccionUsuario = usuario.Direcciones.stream()
+                        .anyMatch(d -> d.getIdDireccion() == identificador);
+
+                if (direccionUsuario) {
+                    Result resultDireccion = usuarioDAOJPAImplementation.DireccionGetById(identificador);
+                    Direccion direccion = (Direccion) resultDireccion.object;
+                    usuario.Direcciones.remove(direccion);
+                    Result resultDeleteDir = usuarioDAOJPAImplementation.DeleteDireccion(identificador);
+                    if (resultDeleteDir.correct) {
+                        return ResponseEntity.ok("Exito en el borrado " + resultDeleteDir);
+                    } else {
+                        ResponseEntity.badRequest().body(resultDeleteDir.errorMessage);
+                    }
+                }
+            }
+
+            return ResponseEntity.status(403).body("No tienes permiso para eliminar esta direccion.");
 
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getLocalizedMessage());
         }
+
+
     }
     
       @GetMapping("/Direccion/{IdDireccion}")
@@ -255,17 +306,33 @@ public class UsuarioRestController {
     }
     
         @PostMapping("/Direccion")
-            @PreAuthorize("hasRole('Administrador')")
-    public ResponseEntity AddDireccion(@RequestBody Direccion direccion, @RequestParam("identificador") int identificador) {
+            @PreAuthorize("hasRole('Administrador') or #idusuario == principal.idusuario")
+    public ResponseEntity AddDireccion(@RequestBody Direccion direccion, @RequestParam("identificador") int identificador, Authentication authentication) {
         try {
-            Result result = usuarioDAOJPAImplementation.AddDireccion(direccion, identificador);
+            
+            
+            
+            Result result = usuarioDAOJPAImplementation.GetById(identificador);
+            Usuario userBusqueda = (Usuario) result.object;
+
+            String userLog = authentication.getName();
+            boolean admin = authentication.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_Administrador"));
+
+            if (admin || userBusqueda.getUsername().equals(userLog)) {
+            
+            
+             result = usuarioDAOJPAImplementation.AddDireccion(direccion, identificador);
 
             if (result.correct) {
                 return ResponseEntity.ok(result.object);
             } else {
                 return ResponseEntity.badRequest().body(result.errorMessage);
             }
-
+            }
+            
+                        return ResponseEntity.status(403).body("No tienes permiso para ver este perfil.");
+            
         } catch (Exception e) {
             return ResponseEntity.status(500).body(e.getMessage());
         }
@@ -286,9 +353,34 @@ public class UsuarioRestController {
 //    }
 //    
     @PutMapping("/Direccion")
-        @PreAuthorize("hasRole('Administrador')")
-    public ResponseEntity UpdateDireccion(@RequestBody Direccion direccion){
+        @PreAuthorize("hasAnyRole('Administrador', 'Visor', 'Usuario Estandar')")
+    public ResponseEntity UpdateDireccion(@RequestBody Direccion direccion,  @RequestParam(required = false) Integer identificador, Authentication authentication){
         try{
+            CustomUserDetailsService userCustom = (CustomUserDetailsService) authentication.getPrincipal();
+            int userLog = userCustom.getidUsuario();
+
+            boolean admin = authentication.getAuthorities().stream()
+                    .anyMatch(u -> u.getAuthority().equals("ROLE_Administrador"));
+
+            if (identificador != null) {
+                if (!admin) {
+                    return ResponseEntity.status(400).body("No puedes actualizar esa informacion");
+                }
+                direccion.setIdDireccion(identificador);
+            } else {
+                Result resultDireccion = usuarioDAOJPAImplementation.DireccionGetById(direccion.getIdDireccion());
+                Direccion direccionBD = (Direccion) resultDireccion.object;
+                
+                if (!resultDireccion.correct || resultDireccion.object == null) {
+                    return ResponseEntity.status(400).body("Esa direccion no existe");
+                }
+                if (direccionBD.getUsuario().getIdUsuario() != userLog) {
+                    return ResponseEntity.status(400).body("No tienes permiso para editar esa direccion");
+                }
+                direccion.setUsuario(direccionBD.getUsuario());
+            }
+            
+            
             Result result = usuarioDAOJPAImplementation.UpdateDireccion(direccion);
             
             if(result.correct){
@@ -302,6 +394,41 @@ public class UsuarioRestController {
     }
         
     }
+    
+    
+    
+      @PatchMapping("/Status")
+    @PreAuthorize("hasRole('Administrador')")
+    public ResponseEntity UpdateEstatus(@RequestParam("idUsuario") int idUsuario, @RequestParam("status") int status) {
+        try {
+            Result result = usuarioDAOJPAImplementation.UpdateStatus(idUsuario, status);
+            if (result.correct) {
+                return ResponseEntity.ok().body(result);
+            } else {
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getLocalizedMessage());
+        }
+    }
+    
+      @GetMapping("/Rol")
+    @PreAuthorize("hasRole('Administrador')")
+    public ResponseEntity GetRol() {
+        try {
+            Result result = rolDAOJPAImplementation.GetRol();
+            if (result.correct) {
+                return ResponseEntity.ok(result);
+            } else {
+                return ResponseEntity.badRequest().body(result.errorMessage);
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(e.getLocalizedMessage());
+        }
+    }
+
+    
+    
     
      @PostMapping("/cargarArchivo")
          @PreAuthorize("hasRole('Administrador')")

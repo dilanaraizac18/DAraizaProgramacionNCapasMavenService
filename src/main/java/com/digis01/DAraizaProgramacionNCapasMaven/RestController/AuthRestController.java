@@ -4,6 +4,7 @@
  */
 package com.digis01.DAraizaProgramacionNCapasMaven.RestController;
 
+import com.digis01.DAraizaProgramacionNCapasMaven.JPA.Result;
 import com.digis01.DAraizaProgramacionNCapasMaven.Service.JwtService;
 import com.digis01.DAraizaProgramacionNCapasMaven.Service.UserDetailJPAService;
 import java.util.HashMap;
@@ -51,6 +52,12 @@ public class AuthRestController {
         // api key 
         Map<String, Object> map = new HashMap<>();
         map.put("Key", token);
+        Result result = new Result();
+        result.object = map.get("key");
+        result.correct = true;
+        
+        
+        
         return ResponseEntity.ok(map);
     }
 }
