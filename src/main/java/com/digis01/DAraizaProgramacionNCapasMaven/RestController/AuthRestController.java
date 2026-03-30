@@ -51,7 +51,7 @@ public class AuthRestController {
         String token = jwtService.generateToken(user);
         // api key 
         Map<String, Object> map = new HashMap<>();
-        map.put("Key", token);
+        map.put("key", token);
         Result result = new Result();
         result.object = map.get("key");
         result.correct = true;

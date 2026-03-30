@@ -18,6 +18,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.DefaultSecurityFilterChain;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -40,7 +41,7 @@ public class SecurityConfiguration {
         this.userDetailJPA = userDetailJPA;
     }
     @Bean
-    public SecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
+    public DefaultSecurityFilterChain securityFilterChain (HttpSecurity http) throws Exception{
 //        http.authorizeHttpRequests(configurer -> configurer
 //        .requestMatchers("/usuario/**")
 //        .hasAnyRole("Administrador", "Editor", "Usuario Estandar", "Visor", "Invitado")
@@ -60,14 +61,25 @@ public class SecurityConfiguration {
     return http
         .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-            .requestMatchers("/auth/**").permitAll()
-                    .anyRequest().authenticated()
+//            .requestMatchers("/auth/**").permitAll()
+            .requestMatchers("/usuario/**")
+            .hasAnyRole("Administrador", "Editor", "Usuario Estandar", "Visor", "Invitado")
+            .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll()
+            .anyRequest().authenticated()
             )
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .formLogin(form -> form 
+        .loginPage("/login")
+        .loginProcessingUrl("/login")
+        .defaultSuccessUrl("/usuario", true)
+         .failureUrl("/login?error=true")
+        )
+         .sessionManagement(session ->
+                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     )
-            .addFilterBefore(jwtAuthentication, UsernamePasswordAuthenticationFilter.class)
-            .build();
+                    .build();
+
+//            .addFilterBefore(jwtAuthentication, UsernamePasswordAuthenticationFilter.class)
+//            .build();
     
     }
     
