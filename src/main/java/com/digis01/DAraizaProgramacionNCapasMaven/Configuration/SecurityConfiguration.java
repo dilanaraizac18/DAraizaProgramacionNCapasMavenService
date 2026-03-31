@@ -58,28 +58,39 @@ public class SecurityConfiguration {
 //        
 //        return http.build();
 
-    return http
-        .csrf(csrf -> csrf.disable())
-            .authorizeHttpRequests(auth -> auth
+//    return http
+//        .csrf(csrf -> csrf.disable())
+//            .authorizeHttpRequests(auth -> auth
 //            .requestMatchers("/auth/**").permitAll()
-            .requestMatchers("/usuario/**")
-            .hasAnyRole("Administrador", "Editor", "Usuario Estandar", "Visor", "Invitado")
-            .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll()
-            .anyRequest().authenticated()
-            )
-            .formLogin(form -> form 
-        .loginPage("/login")
-        .loginProcessingUrl("/login")
-        .defaultSuccessUrl("/usuario", true)
-         .failureUrl("/login?error=true")
-        )
-         .sessionManagement(session ->
-                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    )
-                    .build();
+//            .requestMatchers("/usuario/**")
+//            .hasAnyRole("Administrador", "Editor", "Usuario Estandar", "Visor", "Invitado")
+//            .requestMatchers("/css/**", "/js/**", "/images/**", "/login").permitAll()
+//            .anyRequest().authenticated()
+//            )
+//            .formLogin(form -> form 
+//        .loginPage("/login")
+//        .loginProcessingUrl("/login")
+//        .defaultSuccessUrl("/usuario", true)
+//         .failureUrl("/login?error=true")
+//        )
+//         .sessionManagement(session ->
+//                    session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+//                    )
+//                    .build();
 
 //            .addFilterBefore(jwtAuthentication, UsernamePasswordAuthenticationFilter.class)
 //            .build();
+
+  return http
+                .csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/auth/**").permitAll()
+                .anyRequest().authenticated()
+                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .addFilterBefore(jwtAuthentication, UsernamePasswordAuthenticationFilter.class)
+                .build();
     
     }
     
