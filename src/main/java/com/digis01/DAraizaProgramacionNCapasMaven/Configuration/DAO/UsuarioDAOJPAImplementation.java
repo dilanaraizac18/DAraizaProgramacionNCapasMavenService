@@ -125,12 +125,13 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA{
 
            
             result.object = usuariojpa;
+            result.correct = true;
+
 
         } else {
             result.correct = false;
             result.errorMessage = "Usuario no encontrado";
         }
-            result.correct = true;
         }catch( Exception ex){
             result.correct = false;
             result.errorMessage = ex.getLocalizedMessage();
