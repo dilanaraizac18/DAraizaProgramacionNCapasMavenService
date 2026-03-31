@@ -62,7 +62,6 @@ class DAraizaProgramacionNCapasMavenApplicationTests {
     void AddDireccion(){
         Direccion direccion = new Direccion();
         
-        
         direccion.setCalle("Nueva calle3");
         direccion.setNumeroExterior("44");
         direccion.setNumeroInterior("SN");
@@ -73,6 +72,14 @@ class DAraizaProgramacionNCapasMavenApplicationTests {
         
         Assertions.assertTrue(result.correct);
         Assertions.assertNotNull(result);
+    }
+    
+    @Test
+    void DeleteDireccion(){
+        Result result = usuarioDAOJPAImplementation.DeleteDireccion(123);
+        Assertions.assertTrue(result.correct);
+        Assertions.assertNotNull(result);
+        
     }
     
     
