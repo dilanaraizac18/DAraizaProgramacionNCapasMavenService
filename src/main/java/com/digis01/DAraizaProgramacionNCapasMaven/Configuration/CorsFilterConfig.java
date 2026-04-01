@@ -11,6 +11,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.service.invoker.UrlArgumentResolver;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
  *
@@ -19,25 +20,21 @@ import org.springframework.web.service.invoker.UrlArgumentResolver;
 @Configuration
 public class CorsFilterConfig {
     
-    @Bean
-    public CorsFilter corsFilter(){
-        UrlBasedCorsConfigurationSource source= new UrlBasedCorsConfigurationSource();
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        
-        corsConfiguration.addAllowedOriginPattern("*");
-        
-        corsConfiguration.addAllowedMethod(HttpMethod.GET);
-        corsConfiguration.addAllowedMethod(HttpMethod.DELETE);
-        corsConfiguration.addAllowedMethod(HttpMethod.POST);
-        corsConfiguration.addAllowedMethod(HttpMethod.PUT);
-        corsConfiguration.addAllowedMethod(HttpMethod.PATCH);
+    @Configuration
+public class WebConfig implements WebMvcConfigurer {
 
-        corsConfiguration.addAllowedHeader("*");
-        
-        source.registerCorsConfiguration("/**", corsConfiguration);
-        
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true);
+        config.addAllowedOriginPattern("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }
+}
     
     
     

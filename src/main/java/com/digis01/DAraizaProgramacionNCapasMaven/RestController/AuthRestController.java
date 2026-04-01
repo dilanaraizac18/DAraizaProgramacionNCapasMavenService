@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 public class AuthRestController {
-    
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -38,26 +38,30 @@ public class AuthRestController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        
+
         authenticationManager.authenticate(
-            new UsernamePasswordAuthenticationToken(
-                loginRequest.get("email"), 
-                loginRequest.get("password")
-            )
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.get("username"),
+                        loginRequest.get("password")
+                )
         );
 
-        UserDetails user = userDetailsService.loadUserByUsername(loginRequest.get("email"));
+        UserDetails user = userDetailsService.loadUserByUsername(loginRequest.get("username"));
+
+        if (user == null) {
+            return ResponseEntity.status(500).body("Acceso denegado");
+        }
+
         // si todo fue correcto
         String token = jwtService.generateToken(user);
         // api key 
         Map<String, Object> map = new HashMap<>();
-        map.put("key", token);
+        map.put("token", token);
         Result result = new Result();
-        result.object = map.get("key");
+        result.object = map.get("token");
         result.correct = true;
-        
-        
-        
-        return ResponseEntity.ok(map);
+        result.errorMessage = user.getAuthorities().toString();
+
+        return ResponseEntity.ok(result);
     }
 }
